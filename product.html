@@ -1,0 +1,44 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Product List</title> 
+<style> 
+body {
+    font-family: Arial, sans-serif; 
+            margin: 20px; 
+        } 
+        .product { 
+            padding: 10px; 
+            margin: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        } 
+        .electronics { 
+            background-color:blue;
+            color: #00509e; 
+        } 
+        .fashion { 
+            background-color: black;
+            color: #a0522d; 
+        } 
+        #special { 
+            font-weight: bold; 
+            text-decoration: underline; 
+        } 
+        [data-category="grocery"] { 
+            background-color: #f5f5dc; 
+            color: #6b8e23; 
+        } 
+    </style> 
+</head> 
+<body> 
+    <h1>Product List</h1> 
+    <div class="product electronics">Smartphone</div> 
+    <div class="product fashion">T-Shirt</div>
+    <div class="product grocery" id="special" data-category="grocery">Organic Rice</div> 
+<div class="product electronics">Laptop</div> 
+<div class="product fashion">Jeans</div> 
+</body> 
+</html> 
