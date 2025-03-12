@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alliance Weather Finder</title>
+    <!-- Include Bootstrap 4 for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        /* Custom styles */
+        body {
+            transition: background-color 1s ease;
+            color: #fff;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .weather-info {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: black; /* Static black color for header */
+            font-size: 3rem;
+            font-weight: bold;
+            transition: color 1s ease; /* Smooth color transition */
+        }
+
+        #temp, #temp_min, #temp_max, #sea_level {
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="header">Alliance Weather Finder</h1>
+        <form id="weatherForm">
+            <div class="form-group">
+                <input type="search" id="city" class="form-control" placeholder="Enter the city" required>
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="getWeather(event)">Search</button>
+        </form>
+
+        <div class="weather-info mt-4">
+            <p id="cityName"></p>
+            <p id="weatherCondition"></p>
+            <p id="emoji" class="emoji"></p>
+            <p>Temperature: <span id="temp"></span></p>
+            <p>Temp-min: <span id="temp_min"></span></p>
+            <p>Temp-max: <span id="temp_max"></span></p>
+            <p>Sea-level: <span id="sea_level"></span></p>
+            <img id="weatherIcon" alt="Weather Icon" width="100px">
+        </div>
+    </div>
+
+    <script>
+        const api = {
+            base: "https://api.openweathermap.org/data/2.5/weather?q=",
+            key: "6237a0f33016f8cc08e26224e0dba31e"
+        };
+
+        // Handle form submission and prevent default behavior
+        document.getElementById('weatherForm').addEventListener('submit', getWeather);
+
+        function getWeather(event) {
+            event.preventDefault();
+
+            const cityName = document.getElementById('city').value;
+
+            fetch(`${api.base}${cityName}&appid=${api.key}&units=metric`)
+                .then(response => response.json())
+                .then(data => showWeather(data));
+        }
+
+        function showWeather(data) {
+            console.log(data);
+
+            const cityName = data.name;
+            const weatherCondition = data.weather[0].main;
+            const weatherIcon = data.weather[0].icon;
+            const temp = data.main.temp;
+            const temp_min = data.main.temp_min;
+            const temp_max = data.main.temp_max;
+            const sea_level = data.main.sea_level;
+
+            // Display weather info
+            document.getElementById('cityName').textContent = `City: ${cityName}`;
+            document.getElementById('weatherCondition').textContent = `Condition: ${weatherCondition}`;
+            document.getElementById('temp').textContent = `${temp} °C`;
+            document.getElementById('temp_min').textContent = `${temp_min} °C`;
+            document.getElementById('temp_max').textContent = `${temp_max} °C`;
+            document.getElementById('sea_level').textContent = `${sea_level} m`;
+
+            // Add Weather Icon
+            document.getElementById('weatherIcon').src = `http://openweathermap.org/img/wn/${weatherIcon}.png`;
+
+            // Change Background Color, Image, Emoji based on weather condition
+            changeBackground(weatherCondition);
+            displayEmoji(weatherCondition);
+        }
+
+        function changeBackground(condition) {
+            let bgColor = "";
+            let bgImage = "";
+
+            switch (condition.toLowerCase()) {
+                case 'clear':
+                    bgColor = "#87CEEB"; // Sky blue for clear skies
+                    bgImage = "url('https://source.unsplash.com/1600x900/?clear-sky')";
+                    break;
+                case 'clouds':
+                    bgColor = "#B0C4DE"; // Light steel blue for cloudy
+                    bgImage = "url('https://source.unsplash.com/1600x900/?cloudy')";
+                    break;
+                case 'rain':
+                    bgColor = "#4682B4"; // Steel blue for rain
+                    bgImage = "url('https://source.unsplash.com/1600x900/?rain')";
+                    break;
+                case 'snow':
+                    bgColor = "#ADD8E6"; // Light blue for snow
+                    bgImage = "url('https://source.unsplash.com/1600x900/?snow')";
+                    break;
+                case 'thunderstorm':
+                    bgColor = "#A9A9A9"; // Dark gray for thunderstorm
+                    bgImage = "url('https://source.unsplash.com/1600x900/?thunderstorm')";
+                    break;
+                case 'drizzle':
+                    bgColor = "#B0E0E6"; // Powder blue for drizzle
+                    bgImage = "url('https://source.unsplash.com/1600x900/?drizzle')";
+                    break;
+                default:
+                    bgColor = "#f0f0f0"; // Default background for other conditions
+                    bgImage = "url('https://source.unsplash.com/1600x900/?weather')";
+                    break;
+            }
+
+            document.body.style.backgroundColor = bgColor;
+            document.body.style.backgroundImage = bgImage;
+        }
+
+        function displayEmoji(condition) {
+            let emoji = "";
+
+            switch (condition.toLowerCase()) {
+                case 'clear':
+                    emoji = "☀️"; // Sun for clear skies
+                    break;
+                case 'clouds':
+                    emoji = "☁️"; // Cloud for cloudy weather
+                    break;
+                case 'rain':
+                    emoji = "🌧️"; // Cloud with rain
+                    break;
+                case 'snow':
+                    emoji = "❄️"; // Snowflake for snow
+                    break;
+                case 'thunderstorm':
+                    emoji = "⛈️"; // Thunderstorm cloud with lightning
+                    break;
+                case 'drizzle':
+                    emoji = "🌦️"; // Cloud with drizzle
+                    break;
+                default:
+                    emoji = "🌍"; // Default earth emoji
+                    break;
+            }
+
+            document.getElementById('emoji').textContent = emoji;
+        }
+    </script>
+
+    <!-- Bootstrap JS, Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
